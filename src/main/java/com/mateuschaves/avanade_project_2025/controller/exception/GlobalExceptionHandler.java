@@ -1,4 +1,4 @@
-package com.mateuschaves.avanade_project_2025.controller;
+package com.mateuschaves.avanade_project_2025.controller.exception;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,23 +15,19 @@ public class GlobalExceptionHandler {
     private final Logger logger  = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handleBusinessException(IllegalArgumentException businessException){
-         return new ResponseEntity<>(businessException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+    public ResponseEntity<String> handleBusinessException(IllegalArgumentException businessException) {
+        return new ResponseEntity<>(businessException.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<String> handleNotFoundException(IllegalArgumentException notFoundException){
-        return new ResponseEntity<>("Resource ID not found", HttpStatus.NOT_FOUND);
+    public ResponseEntity<String> handleNotFoundException(NoSuchElementException notFoundException) {
+        return new ResponseEntity<>("Resource ID not found.", HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(Throwable.class)
-    public ResponseEntity<String> handleUnexpectedException(Throwable unexpectedException){
+    public ResponseEntity<String> handleUnexpectedException(Throwable unexpectedException) {
         var message = "Unexpected server error, see the logs.";
-        logger.error("", unexpectedException);
+        logger.error(message, unexpectedException);
         return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
-
-
-
 }
