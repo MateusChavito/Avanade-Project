@@ -1,6 +1,7 @@
 package com.mateuschaves.avanade_project_2025.controller;
 
 
+import com.mateuschaves.avanade_project_2025.controller.dto.UserDto;
 import com.mateuschaves.avanade_project_2025.domain.model.User;
 import com.mateuschaves.avanade_project_2025.service.UserService;
 import org.springframework.http.ResponseEntity;
@@ -20,19 +21,31 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> findById(@PathVariable Long id){
+    public ResponseEntity<UserDto> findById(@PathVariable Long id){
         var user = userService.findById(id);
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(new UserDto(user));
     }
 
     @PostMapping
-    public ResponseEntity<User> create(@RequestBody User userToCreate){
-        var userCreated = userService.create(userToCreate);
+    public ResponseEntity<UserDto> create(@RequestBody UserDto userDto){
+        var userCreated = userService.create(userDto.toModel());
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(userCreated.getId())
                 .toUri();
-        return ResponseEntity.created(location).body(userCreated);
+        return ResponseEntity.created(location).body(new UserDto(userCreated));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UserDto> update(@PathVariable Long id, @RequestBody UserDto userDto) {
+        var userUpdated = userService.update(id, userDto.toModel());
+        return ResponseEntity.ok(new UserDto(userUpdated));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        userService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
 
